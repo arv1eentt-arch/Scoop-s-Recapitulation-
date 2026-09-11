@@ -1,0 +1,685 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Evaluasi Kinerja Video Editor - Divisi Editing Scoop</title>
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Font Awesome Icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    
+    <!-- html2pdf.js CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+    <style>
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fade-in {
+            animation: fadeIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+        
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: #eff6ff; }
+        ::-webkit-scrollbar-thumb { background: #bfdbfe; border-radius: 6px; }
+        ::-webkit-scrollbar-thumb:hover { background: #60a5fa; }
+
+        @media print {
+            body * { visibility: hidden; }
+            #pdfReportContent, #pdfReportContent * { visibility: visible; }
+            #pdfReportContent { position: absolute; left: 0; top: 0; width: 100%; }
+            .no-print { display: none !important; }
+        }
+    </style>
+</head>
+<body class="bg-[#f4f8ff] font-sans text-slate-700 min-h-screen antialiased selection:bg-blue-200 selection:text-blue-900 relative overflow-x-hidden">
+
+    <!-- Background Blobs -->
+    <div class="absolute top-0 left-1/4 w-96 h-96 bg-blue-200/40 rounded-full filter blur-3xl pointer-events-none -z-10 animate-pulse"></div>
+    <div class="absolute top-1/3 right-10 w-80 h-80 bg-sky-200/30 rounded-full filter blur-3xl pointer-events-none -z-10"></div>
+
+    <!-- ========================================== -->
+    <!-- 1. HALAMAN LOGIN (LOGIN GATE)              -->
+    <!-- ========================================== -->
+    <div id="loginScreen" class="min-h-screen flex items-center justify-center p-4">
+        <div class="bg-white/95 backdrop-blur-md border border-blue-100 p-8 rounded-3xl shadow-xl max-w-md w-full animate-fade-in relative z-10">
+            
+            <div class="text-center mb-8">
+                <div class="w-16 h-16 bg-gradient-to-tr from-blue-600 to-sky-400 rounded-2xl text-white mx-auto flex items-center justify-center text-2xl shadow-lg shadow-blue-200 mb-4">
+                    <i class="fa-solid fa-film"></i>
+                </div>
+                <h1 class="text-xl font-bold text-slate-800 tracking-tight">Divisi Editing Scoop</h1>
+                <p class="text-xs text-slate-500 mt-1">Portal Evaluasi & Rekapitulasi Video Garapan</p>
+            </div>
+
+            <!-- Error Notification -->
+            <div id="loginError" class="hidden mb-4 p-3 bg-red-50 border border-red-200 rounded-xl text-red-600 text-xs flex items-center gap-2">
+                <i class="fa-solid fa-circle-exclamation text-sm"></i>
+                <span id="loginErrorMsg">Gagal melakukan login.</span>
+            </div>
+
+            <!-- Opsi 1: Google Login -->
+            <button onclick="handleGoogleLogin()" class="w-full bg-white hover:bg-slate-50 text-slate-700 font-semibold py-3 px-4 rounded-xl border border-slate-200 shadow-sm text-xs flex items-center justify-center gap-3 transition-all active:scale-95 cursor-pointer mb-5">
+                <svg class="w-5 h-5" viewBox="0 0 24 24">
+                    <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                    <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                    <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/>
+                    <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/>
+                </svg>
+                <span>Masuk dengan Google</span>
+            </button>
+
+            <div class="flex items-center my-5">
+                <div class="flex-grow border-t border-slate-200"></div>
+                <span class="px-3 text-[11px] text-slate-400 uppercase font-semibold">Atau Login Email</span>
+                <div class="flex-grow border-t border-slate-200"></div>
+            </div>
+
+            <!-- Opsi 2: Email & Password Login -->
+            <form id="emailLoginForm" onsubmit="handleEmailLogin(event)" class="space-y-3.5">
+                <div>
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">Email</label>
+                    <div class="relative">
+                        <i class="fa-regular fa-envelope absolute left-3.5 top-3 text-slate-400 text-xs"></i>
+                        <input type="email" id="loginEmail" required placeholder="contoh: scooped1ting@gmail.com" class="w-full pl-9 pr-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:bg-white focus:ring-2 focus:ring-blue-400 outline-none transition-all">
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">Password</label>
+                    <div class="relative">
+                        <i class="fa-solid fa-lock absolute left-3.5 top-3 text-slate-400 text-xs"></i>
+                        <input type="password" id="loginPassword" required placeholder="••••••••" class="w-full pl-9 pr-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:bg-white focus:ring-2 focus:ring-blue-400 outline-none transition-all">
+                    </div>
+                </div>
+
+                <button type="submit" id="emailLoginBtn" class="w-full bg-gradient-to-r from-blue-600 to-sky-500 hover:from-blue-700 hover:to-sky-600 text-white font-semibold py-2.5 rounded-xl shadow-md shadow-blue-200 text-xs transition-all active:scale-95 cursor-pointer mt-2">
+                    Masuk dengan Email
+                </button>
+            </form>
+
+            <div class="mt-6 text-center">
+                <p class="text-[11px] text-slate-400">Akses terbatas hanya untuk Tim Divisi Editing Scoop</p>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- ========================================== -->
+    <!-- 2. HALAMAN UTAMA DASHBOARD                 -->
+    <!-- ========================================== -->
+    <div id="mainDashboard" class="hidden min-h-screen bg-gradient-to-br from-blue-50/60 via-sky-50/20 to-indigo-50/20">
+        
+        <!-- Header Navbar -->
+        <header class="bg-white/80 backdrop-blur-md border-b border-blue-100/80 sticky top-0 z-40 shadow-sm shadow-blue-100/40 no-print">
+            <div class="container mx-auto px-4 py-3.5 flex justify-between items-center max-w-7xl">
+                <div class="flex items-center space-x-3">
+                    <div class="p-2.5 bg-gradient-to-tr from-blue-600 to-sky-400 rounded-xl text-white shadow-md shadow-blue-200">
+                        <i class="fa-solid fa-film text-lg"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-base font-bold tracking-wide text-slate-800 flex items-center gap-2">
+                            Divisi Editing Scoop
+                            <span id="roleBadge" class="bg-blue-100 text-blue-700 text-[10px] font-semibold px-2 py-0.5 rounded-full border border-blue-200">PROD</span>
+                        </h1>
+                        <p class="text-[11px] text-blue-600/80 font-medium">Portal Evaluasi Output Garapan Video</p>
+                    </div>
+                </div>
+
+                <!-- User Profile Area -->
+                <div class="flex items-center gap-3">
+                    <div id="userProfile" class="flex items-center gap-3 bg-blue-50/80 px-3 py-1.5 rounded-full border border-blue-200/60">
+                        <img id="userAvatar" class="w-7 h-7 rounded-full border border-blue-300" src="https://via.placeholder.com/150" alt="Avatar">
+                        <div class="text-left hidden sm:block">
+                            <p id="userName" class="text-xs font-bold text-slate-800 leading-tight">-</p>
+                            <p id="userEmail" class="text-[10px] text-slate-500 leading-tight">-</p>
+                        </div>
+                        <button onclick="handleLogout()" title="Logout" class="text-slate-400 hover:text-red-500 p-1.5 transition-colors ml-1 cursor-pointer">
+                            <i class="fa-solid fa-right-from-bracket text-xs"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <main class="container mx-auto px-4 py-8 max-w-7xl animate-fade-in">
+            
+            <!-- Tanggal & Title Bar -->
+            <div class="flex flex-wrap justify-between items-center mb-6 gap-4 no-print">
+                <div>
+                    <h2 class="text-xl font-bold text-slate-800 tracking-tight">Evaluasi Kinerja</h2>
+                    <p class="text-xs text-slate-500 mt-0.5">Monitoring Produktivitas Dan Kinerja Anggota</p>
+                </div>
+                <div class="flex items-center gap-2 bg-white/90 backdrop-blur px-4 py-2 rounded-xl border border-blue-100 shadow-sm text-xs font-medium text-slate-600">
+                    <i class="fa-regular fa-calendar-check text-blue-500"></i>
+                    <span id="currentDateText"></span>
+                </div>
+            </div>
+
+            <!-- Summary Cards -->
+            <div class="grid grid-cols-1 md:grid-cols-12 gap-5 mb-8 no-print">
+                
+                <div class="md:col-span-4 bg-white/90 backdrop-blur p-5 rounded-2xl shadow-sm border border-blue-100 flex items-center justify-between">
+                    <div>
+                        <p class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Total Entri Laporan</p>
+                        <h3 id="statTotalReports" class="text-2xl font-black text-slate-800 mt-1">0</h3>
+                        <p class="text-[11px] text-emerald-600 font-medium mt-1"><i class="fa-solid fa-cloud-check mr-1"></i>Tersinkron Database</p>
+                    </div>
+                    <div class="w-12 h-12 bg-blue-50 text-blue-600 rounded-2xl flex items-center justify-center text-xl shadow-inner border border-blue-100">
+                        <i class="fa-solid fa-list-ol"></i>
+                    </div>
+                </div>
+
+                <div class="md:col-span-4 bg-white/90 backdrop-blur p-5 rounded-2xl shadow-sm border border-blue-100 flex items-center justify-between">
+                    <div>
+                        <p class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Total Video Digarap</p>
+                        <h3 id="statTotalVideos" class="text-2xl font-black text-slate-800 mt-1">0</h3>
+                        <p class="text-[11px] text-sky-600 font-medium mt-1"><i class="fa-solid fa-circle-check mr-1"></i>Output terkumpul</p>
+                    </div>
+                    <div class="w-12 h-12 bg-sky-50 text-sky-600 rounded-2xl flex items-center justify-center text-xl shadow-inner border border-sky-100">
+                        <i class="fa-solid fa-video"></i>
+                    </div>
+                </div>
+
+                <div class="md:col-span-4 bg-white/90 backdrop-blur p-5 rounded-2xl shadow-sm border border-blue-100 flex flex-col justify-between">
+                    <div>
+                        <div class="flex justify-between items-center mb-1">
+                            <p class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Pencapaian Target</p>
+                            <span id="targetPercent" class="text-xs font-bold text-blue-600">0%</span>
+                        </div>
+                        <div class="w-full bg-blue-50 h-2.5 rounded-full overflow-hidden border border-blue-100 mt-2">
+                            <div id="targetProgressBar" class="bg-gradient-to-r from-blue-400 to-sky-500 h-full w-0 transition-all duration-500 rounded-full"></div>
+                        </div>
+                    </div>
+                    <div class="text-[11px] text-slate-400 mt-3 flex items-center justify-between">
+                        <span class="flex items-center gap-1.5 font-medium text-slate-500">
+                            Target Per-Periode: 
+                            <input type="number" id="dailyTargetInput" min="1" value="10" onchange="updateTargetValue()" class="w-12 px-1.5 py-0.5 bg-blue-50 border border-blue-200 rounded-lg text-center text-xs font-bold text-blue-700 outline-none"> 
+                            Video
+                        </span>
+                        <i class="fa-solid fa-bullseye text-blue-400"></i>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Content Grid -->
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+                
+                <!-- Form Input -->
+                <div class="lg:col-span-4 bg-white/90 backdrop-blur p-6 rounded-2xl shadow-sm border border-blue-100 h-fit sticky top-20 no-print">
+                    <h2 class="text-base font-bold text-slate-800 mb-4 pb-3 border-b border-blue-50 flex items-center justify-between">
+                        <span class="flex items-center gap-2">
+                            <i class="fa-solid fa-pen-to-square text-blue-500"></i> Form Input Garapan
+                        </span>
+                    </h2>
+                    
+                    <form id="attendanceForm" class="space-y-4">
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-700 mb-1">Nama Editor</label>
+                            <div class="relative">
+                                <i class="fa-regular fa-user absolute left-3.5 top-3 text-slate-400 text-xs"></i>
+                                <input type="text" id="editorName" required placeholder="Contoh: Budi / Dimas" class="w-full pl-9 pr-3.5 py-2.5 bg-blue-50/20 border border-blue-100 rounded-xl focus:bg-white focus:ring-2 focus:ring-blue-400 outline-none text-xs">
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-700 mb-1">Judul / Nama Project Video</label>
+                            <div class="relative">
+                                <i class="fa-solid fa-clapperboard absolute left-3.5 top-3 text-slate-400 text-xs"></i>
+                                <input type="text" id="videoProject" required placeholder="Contoh: Video Event Launching..." class="w-full pl-9 pr-3.5 py-2.5 bg-blue-50/20 border border-blue-100 rounded-xl focus:bg-white focus:ring-2 focus:ring-blue-400 outline-none text-xs">
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-700 mb-1">Tipe / Konsep Video</label>
+                            <div class="relative">
+                                <i class="fa-solid fa-layer-group absolute left-3.5 top-3 text-slate-400 text-xs"></i>
+                                <select id="videoType" required class="w-full pl-9 pr-3.5 py-2.5 bg-blue-50/20 border border-blue-100 rounded-xl focus:bg-white focus:ring-2 focus:ring-blue-400 outline-none text-xs text-slate-700 appearance-none">
+                                    <option value="Rekap Video / Video Recap">Rekap Video / Video Recap</option>
+                                    <option value="Wawancara / Interview">Wawancara / Interview</option>
+                                    <option value="Opini Publik / Voxpop">Opini Publik / Voxpop</option>
+                                    <option value="Narasi Suara / Voice Over">Narasi Suara / Voice Over</option>
+                                    <option value="Cuplikan Promosi / Teaser & Highlight">Cuplikan Promosi / Teaser & Highlight</option>
+                                    <option value="Dokumenter / Documentary">Dokumenter / Documentary</option>
+                                    <option value="Animasi Grafis / Motion Graphic">Animasi Grafis / Motion Graphic</option>
+                                    <option value="Lainnya / Others">Lainnya / Others</option>
+                                </select>
+                                <i class="fa-solid fa-chevron-down absolute right-3.5 top-3.5 text-slate-400 text-[10px] pointer-events-none"></i>
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-700 mb-1">Jumlah Video</label>
+                            <div class="relative">
+                                <i class="fa-solid fa-hashtag absolute left-3.5 top-3 text-slate-400 text-xs"></i>
+                                <input type="number" id="videoCount" min="1" value="1" required class="w-full pl-9 pr-3.5 py-2.5 bg-blue-50/20 border border-blue-100 rounded-xl focus:bg-white focus:ring-2 focus:ring-blue-400 outline-none text-xs">
+                            </div>
+                        </div>
+
+                        <button type="submit" id="submitBtn" class="w-full bg-gradient-to-r from-blue-500 to-sky-500 hover:from-blue-600 hover:to-sky-600 text-white font-semibold py-3 rounded-xl shadow-md shadow-blue-200 transition-all duration-200 active:scale-95 flex items-center justify-center gap-2 text-xs mt-2 cursor-pointer">
+                            <i class="fa-solid fa-paper-plane"></i> Simpan Data Garapan
+                        </button>
+                    </form>
+                </div>
+
+                <!-- Tabel Monitoring -->
+                <div class="lg:col-span-8 bg-white/90 backdrop-blur p-6 rounded-2xl shadow-sm border border-blue-100">
+                    
+                    <div class="flex flex-wrap justify-between items-center mb-6 pb-4 border-b border-blue-50 gap-3 no-print">
+                        <div>
+                            <h2 class="text-base font-bold text-slate-800 flex items-center gap-2">
+                                <i class="fa-solid fa-list-check text-blue-500"></i> Rekap Garapan Editor
+                            </h2>
+                            <p class="text-xs text-slate-400 mt-0.5">Daftar riwayat input pengerjaan hari ini</p>
+                        </div>
+
+                        <div class="flex items-center gap-2 flex-wrap sm:flex-nowrap w-full sm:w-auto">
+                            <div class="relative w-full sm:w-48">
+                                <i class="fa-solid fa-magnifying-glass absolute left-3 top-2.5 text-slate-400 text-xs"></i>
+                                <input type="text" id="searchInput" onkeyup="filterTable()" placeholder="Cari editor / judul..." class="w-full pl-8 pr-3 py-1.5 bg-blue-50/40 border border-blue-100 rounded-lg text-xs outline-none focus:ring-2 focus:ring-blue-300">
+                            </div>
+
+                            <button id="exportPdfBtn" onclick="exportToPDF()" class="bg-blue-50 hover:bg-blue-100 text-blue-600 font-semibold px-3.5 py-2 rounded-xl transition-all text-xs flex items-center gap-1.5 border border-blue-200/60 shadow-sm whitespace-nowrap cursor-pointer">
+                                <i class="fa-solid fa-file-pdf text-blue-500"></i> Download PDF
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- AREA PRINT / EXPORT PDF -->
+                    <div id="pdfReportContent" class="bg-white p-2">
+                        
+                        <div id="printHeader" class="hidden mb-6 pb-4 border-b-2 border-slate-700">
+                            <div class="text-center">
+                                <h1 class="text-xl font-bold uppercase tracking-wider text-slate-900">REKAP EVALUASI HASIL EDITING VIDEO - DIVISI EDITING SCOOP</h1>
+                                <p class="text-xs text-slate-600 mt-1" id="pdfPrintDate"></p>
+                            </div>
+                        </div>
+
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left border-collapse">
+                                <thead>
+                                    <tr class="bg-blue-50/80 border-b border-blue-100 text-slate-500 uppercase text-[10px] tracking-wider font-bold">
+                                        <th class="p-3 rounded-l-lg">Jam</th>
+                                        <th class="p-3">Nama Editor</th>
+                                        <th class="p-3">Judul / Project Video</th>
+                                        <th class="p-3">Tipe / Konsep</th>
+                                        <th class="p-3 text-center">Jumlah</th>
+                                        <th class="p-3 text-center rounded-r-lg no-print">Aksi</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="logTableBody" class="divide-y divide-blue-50 text-xs">
+                                </tbody>
+                            </table>
+
+                            <div id="emptyState" class="hidden text-center py-12 px-4">
+                                <div class="w-16 h-16 bg-blue-50 text-blue-400 rounded-full flex items-center justify-center mx-auto mb-3 text-2xl border border-blue-100">
+                                    <i class="fa-regular fa-folder-open"></i>
+                                </div>
+                                <p class="text-sm font-semibold text-slate-600">Belum ada laporan dimasukkan</p>
+                                <p class="text-xs text-slate-400 mt-1">Gunakan form di sebelah kiri untuk menambah hasil garapan editor</p>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </main>
+    </div>
+
+    <!-- FIREBASE JS SDK -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-analytics.js";
+        import { 
+            getAuth, 
+            GoogleAuthProvider, 
+            signInWithPopup, 
+            signInWithEmailAndPassword,
+            signOut, 
+            onAuthStateChanged 
+        } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+        import { 
+            getFirestore, 
+            collection, 
+            addDoc, 
+            deleteDoc, 
+            doc, 
+            onSnapshot, 
+            query, 
+            orderBy, 
+            serverTimestamp 
+        } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+        // CONFIG FIREBASE
+        const firebaseConfig = {
+            apiKey: "AIzaSyAhGlki2Dah__1CAbsHPbupwdWRvyQ3IZc",
+            authDomain: "scoop-recapitulation-arv1ent.firebaseapp.com",
+            projectId: "scoop-recapitulation-arv1ent",
+            storageBucket: "scoop-recapitulation-arv1ent.firebasestorage.app",
+            messagingSenderId: "99116452495",
+            appId: "1:99116452495:web:b077dd4f21eaf4780abefa",
+            measurementId: "G-9FE401JPFP"
+        };
+
+        // DAFTAR AKUN ADMIN (Diakses via Google / Email Login)
+        const ADMIN_EMAILS = [
+            "arvnn.ad4m@gmail.com",
+            "jnvisbleee@gmail.com",
+            "scooped1ting@gmail.com"
+        ];
+
+        // Inisialisasi Firebase
+        const app = initializeApp(firebaseConfig);
+        const analytics = getAnalytics(app);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+        const googleProvider = new GoogleAuthProvider();
+
+        let currentUser = null;
+        let isAdminUser = false;
+        let reportsData = [];
+        let dailyTarget = 10;
+        let unsubscribeFirestore = null;
+
+        // Elements UI
+        const loginScreen = document.getElementById('loginScreen');
+        const mainDashboard = document.getElementById('mainDashboard');
+        const loginError = document.getElementById('loginError');
+        const loginErrorMsg = document.getElementById('loginErrorMsg');
+        const userAvatar = document.getElementById('userAvatar');
+        const userName = document.getElementById('userName');
+        const userEmail = document.getElementById('userEmail');
+        const roleBadge = document.getElementById('roleBadge');
+        const editorNameInput = document.getElementById('editorName');
+        const attendanceForm = document.getElementById('attendanceForm');
+        const logTableBody = document.getElementById('logTableBody');
+        const emptyState = document.getElementById('emptyState');
+        const dailyTargetInput = document.getElementById('dailyTargetInput');
+
+        // Tanggal
+        const dateOptions = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+        const formattedDate = new Date().toLocaleDateString('id-ID', dateOptions);
+        document.getElementById('currentDateText').textContent = formattedDate;
+
+        // 1. Google Login Handler
+        window.handleGoogleLogin = async () => {
+            hideLoginError();
+            try {
+                await signInWithPopup(auth, googleProvider);
+            } catch (error) {
+                console.error("Login Google Error:", error);
+                showLoginError("Gagal login dengan Google: " + error.message);
+            }
+        };
+
+        // 2. Email Login Handler
+        window.handleEmailLogin = async (e) => {
+            e.preventDefault();
+            hideLoginError();
+            
+            const email = document.getElementById('loginEmail').value.trim();
+            const password = document.getElementById('loginPassword').value;
+
+            try {
+                await signInWithEmailAndPassword(auth, email, password);
+            } catch (error) {
+                console.error("Login Email Error:", error);
+                showLoginError("Gagal login! Periksa email dan password Anda.");
+            }
+        };
+
+        // Logout
+        window.handleLogout = async () => {
+            if (confirm("Yakin ingin keluar dari sistem?")) {
+                await signOut(auth);
+            }
+        };
+
+        function showLoginError(msg) {
+            loginErrorMsg.textContent = msg;
+            loginError.classList.remove('hidden');
+        }
+
+        function hideLoginError() {
+            loginError.classList.add('hidden');
+        }
+
+        // Monitor Auth State Changes (GATE LOGIC)
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                currentUser = user;
+                const email = (user.email || '').toLowerCase();
+                
+                // Cek Peran (Admin vs Staff)
+                isAdminUser = ADMIN_EMAILS.includes(email);
+
+                // Update UI Profile
+                userAvatar.src = user.photoURL || `https://ui-avatars.com/api/?name=${encodeURIComponent(user.displayName || email)}&background=0D8ABC&color=fff`;
+                userName.textContent = user.displayName || email.split('@')[0];
+                userEmail.textContent = email;
+
+                if (isAdminUser) {
+                    roleBadge.textContent = "ADMIN";
+                    roleBadge.className = "bg-rose-100 text-rose-700 text-[10px] font-bold px-2 py-0.5 rounded-full border border-rose-200";
+                } else {
+                    roleBadge.textContent = "EDITOR";
+                    roleBadge.className = "bg-blue-100 text-blue-700 text-[10px] font-bold px-2 py-0.5 rounded-full border border-blue-200";
+                }
+
+                // Auto Fill Nama Editor
+                if (!editorNameInput.value) {
+                    editorNameInput.value = user.displayName || email.split('@')[0];
+                }
+
+                // Tampilkan Dashboard, Sembunyikan Login Screen
+                loginScreen.classList.add('hidden');
+                mainDashboard.classList.remove('hidden');
+
+                // Sinkronkan Data dari Firestore
+                listenToFirestoreReports();
+
+            } else {
+                currentUser = null;
+                isAdminUser = false;
+
+                // Tampilkan Login Screen, Sembunyikan Dashboard
+                loginScreen.classList.remove('hidden');
+                mainDashboard.classList.add('hidden');
+
+                if (unsubscribeFirestore) unsubscribeFirestore();
+            }
+        });
+
+        // Realtime Data dari Firestore
+        function listenToFirestoreReports() {
+            const q = query(collection(db, "reports"), orderBy("createdAt", "desc"));
+            
+            unsubscribeFirestore = onSnapshot(q, (snapshot) => {
+                reportsData = [];
+                snapshot.forEach((docSnapshot) => {
+                    const data = docSnapshot.data();
+                    reportsData.push({
+                        id: docSnapshot.id,
+                        ...data
+                    });
+                });
+                renderTable();
+            }, (error) => {
+                console.error("Firestore Error:", error);
+            });
+        }
+
+        window.updateTargetValue = function() {
+            const val = parseInt(dailyTargetInput.value);
+            if (val && val > 0) {
+                dailyTarget = val;
+                localStorage.setItem('video_eval_target', dailyTarget);
+                renderTable();
+            }
+        };
+
+        const savedTarget = localStorage.getItem('video_eval_target');
+        if (savedTarget) {
+            dailyTarget = parseInt(savedTarget) || 10;
+            dailyTargetInput.value = dailyTarget;
+        }
+
+        // Simpan Data Laporan
+        attendanceForm.addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            const name = document.getElementById('editorName').value.trim();
+            const videoProject = document.getElementById('videoProject').value.trim();
+            const videoType = document.getElementById('videoType').value;
+            const videoCount = parseInt(document.getElementById('videoCount').value) || 1;
+
+            const now = new Date();
+            const timeString = now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }) + ' WIB';
+
+            const newReport = {
+                time: timeString,
+                name: name,
+                videoProject: videoProject,
+                videoType: videoType,
+                videoCount: videoCount,
+                createdByEmail: currentUser ? currentUser.email : 'Guest',
+                createdAt: serverTimestamp()
+            };
+
+            try {
+                await addDoc(collection(db, "reports"), newReport);
+                document.getElementById('videoProject').value = '';
+                document.getElementById('videoCount').value = 1;
+            } catch (err) {
+                console.error("Error simpan Firestore:", err);
+                alert("Gagal menyimpan data: " + err.message);
+            }
+        });
+
+        // Hapus Laporan (Hanya Admin atau Pembuat Laporan)
+        window.deleteReport = async function(id, createdByEmail) {
+            if (!isAdminUser && currentUser.email !== createdByEmail) {
+                alert("Anda hanya bisa menghapus laporan yang Anda buat sendiri.");
+                return;
+            }
+
+            if (confirm('Yakin ingin menghapus laporan ini?')) {
+                try {
+                    await deleteDoc(doc(db, "reports", id));
+                } catch (err) {
+                    console.error("Error hapus Firestore:", err);
+                    alert("Gagal menghapus data: " + err.message);
+                }
+            }
+        };
+
+        // Render Tabel
+        window.renderTable = function(dataToRender = reportsData) {
+            logTableBody.innerHTML = '';
+            
+            let totalReports = reportsData.length;
+            let totalVideos = 0;
+
+            reportsData.forEach(item => totalVideos += (item.videoCount || 1));
+
+            if (dataToRender.length === 0) {
+                emptyState.classList.remove('hidden');
+            } else {
+                emptyState.classList.add('hidden');
+
+                dataToRender.forEach((item) => {
+                    let typeBadgeStyle = 'bg-blue-50 text-blue-700 border-blue-200';
+                    if (item.videoType.includes('Wawancara')) typeBadgeStyle = 'bg-sky-50 text-sky-700 border-sky-200';
+                    if (item.videoType.includes('Rekap')) typeBadgeStyle = 'bg-indigo-50 text-indigo-700 border-indigo-200';
+                    if (item.videoType.includes('Narasi')) typeBadgeStyle = 'bg-cyan-50 text-cyan-700 border-cyan-200';
+
+                    const canDelete = isAdminUser || (currentUser && currentUser.email === item.createdByEmail);
+
+                    const row = document.createElement('tr');
+                    row.className = "hover:bg-blue-50/40 transition-colors duration-150 animate-fade-in";
+                    row.innerHTML = `
+                        <td class="p-3 font-mono text-slate-400 text-[11px]">${item.time || '-'}</td>
+                        <td class="p-3 font-bold text-slate-800">${item.name}</td>
+                        <td class="p-3 text-slate-700 font-medium max-w-xs truncate">${item.videoProject}</td>
+                        <td class="p-3">
+                            <span class="${typeBadgeStyle} px-2.5 py-1 rounded-lg border font-semibold text-[10px] inline-block shadow-2xs">
+                                ${item.videoType}
+                            </span>
+                        </td>
+                        <td class="p-3 text-center font-bold text-slate-800">${item.videoCount}</td>
+                        <td class="p-3 text-center no-print">
+                            ${canDelete ? `
+                                <button onclick="deleteReport('${item.id}', '${item.createdByEmail}')" title="Hapus Laporan" class="text-slate-300 hover:text-red-500 transition-colors p-1.5 rounded-lg hover:bg-red-50 cursor-pointer">
+                                    <i class="fa-regular fa-trash-can text-xs"></i>
+                                </button>
+                            ` : `<span class="text-slate-300 text-[10px]">-</span>`}
+                        </td>
+                    `;
+                    logTableBody.appendChild(row);
+                });
+            }
+
+            document.getElementById('statTotalReports').textContent = totalReports;
+            document.getElementById('statTotalVideos').textContent = totalVideos;
+
+            const percentage = Math.min(Math.round((totalVideos / dailyTarget) * 100), 100);
+            document.getElementById('targetPercent').textContent = percentage + '%';
+            document.getElementById('targetProgressBar').style.width = percentage + '%';
+        };
+
+        // Filter Table
+        window.filterTable = function() {
+            const queryText = document.getElementById('searchInput').value.toLowerCase();
+            const filtered = reportsData.filter(item => 
+                item.name.toLowerCase().includes(queryText) || 
+                item.videoProject.toLowerCase().includes(queryText) ||
+                item.videoType.toLowerCase().includes(queryText)
+            );
+            renderTable(filtered);
+        };
+
+        // PDF Export
+        window.exportToPDF = function() {
+            const btn = document.getElementById('exportPdfBtn');
+            const originalText = btn.innerHTML;
+            
+            btn.innerHTML = `<i class="fa-solid fa-spinner animate-spin"></i> Memproses...`;
+            btn.disabled = true;
+
+            const printHeader = document.getElementById('printHeader');
+            document.getElementById('pdfPrintDate').textContent = `Tanggal Laporan: ${formattedDate}`;
+            
+            printHeader.classList.remove('hidden');
+
+            const element = document.getElementById('pdfReportContent');
+
+            setTimeout(() => {
+                const opt = {
+                    margin:       [10, 10, 10, 10],
+                    filename:     `Evaluasi_Editing_Scoop_${new Date().toISOString().slice(0,10)}.pdf`,
+                    image:        { type: 'jpeg', quality: 0.98 },
+                    html2canvas:  { scale: 2, useCORS: true, logging: false, scrollY: 0, scrollX: 0 },
+                    jsPDF:        { unit: 'mm', format: 'a4', orientation: 'landscape' }
+                };
+
+                html2pdf().set(opt).from(element).save().then(() => {
+                    printHeader.classList.add('hidden');
+                    btn.innerHTML = originalText;
+                    btn.disabled = false;
+                }).catch(err => {
+                    console.error('Error Ekspor PDF:', err);
+                    printHeader.classList.add('hidden');
+                    btn.innerHTML = originalText;
+                    btn.disabled = false;
+                });
+            }, 200);
+        };
+    </script>
+</body>
+</html>
