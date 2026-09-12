@@ -24,32 +24,33 @@
         }
         
         ::-webkit-scrollbar { width: 6px; height: 6px; }
-        ::-webkit-scrollbar-track { background: #eff6ff; }
-        ::-webkit-scrollbar-thumb { background: #bfdbfe; border-radius: 6px; }
-        ::-webkit-scrollbar-thumb:hover { background: #60a5fa; }
+        ::-webkit-scrollbar-track { background: rgba(239, 246, 255, 0.5); }
+        ::-webkit-scrollbar-thumb { background: rgba(191, 219, 254, 0.8); border-radius: 6px; }
+        ::-webkit-scrollbar-thumb:hover { background: rgba(96, 165, 250, 1); }
 
         @media print {
             body * { visibility: hidden; }
             #pdfReportContent, #pdfReportContent * { visibility: visible; }
-            #pdfReportContent { position: absolute; left: 0; top: 0; width: 100%; }
+            #pdfReportContent { position: absolute; left: 0; top: 0; width: 100%; background: white !important; }
             .no-print { display: none !important; }
         }
     </style>
 </head>
-<body class="bg-[#f4f8ff] font-sans text-slate-700 min-h-screen antialiased selection:bg-blue-200 selection:text-blue-900 relative overflow-x-hidden">
+<body class="bg-gradient-to-br from-blue-100 via-sky-50 to-indigo-100 font-sans text-slate-700 min-h-screen antialiased selection:bg-blue-200 selection:text-blue-900 relative overflow-x-hidden">
 
-    <!-- Background Blobs -->
-    <div class="absolute top-0 left-1/4 w-96 h-96 bg-blue-200/40 rounded-full filter blur-3xl pointer-events-none -z-10 animate-pulse"></div>
-    <div class="absolute top-1/3 right-10 w-80 h-80 bg-sky-200/30 rounded-full filter blur-3xl pointer-events-none -z-10"></div>
+    <!-- Background Blobs yang Dipercantik untuk Efek Kaca -->
+    <div class="absolute top-10 left-10 w-96 h-96 bg-blue-400/30 rounded-full filter blur-3xl pointer-events-none -z-10 animate-pulse"></div>
+    <div class="absolute bottom-10 right-10 w-96 h-96 bg-cyan-400/20 rounded-full filter blur-3xl pointer-events-none -z-10"></div>
+    <div class="absolute top-1/2 left-1/3 w-80 h-80 bg-indigo-300/20 rounded-full filter blur-3xl pointer-events-none -z-10"></div>
 
     <!-- ========================================== -->
     <!-- 1. HALAMAN LOGIN (LOGIN GATE)              -->
     <!-- ========================================== -->
     <div id="loginScreen" class="min-h-screen flex items-center justify-center p-4">
-        <div class="bg-white/95 backdrop-blur-md border border-blue-100 p-8 rounded-3xl shadow-xl max-w-md w-full animate-fade-in relative z-10">
+        <div class="bg-white/70 backdrop-blur-xl border border-white/60 p-8 rounded-3xl shadow-2xl max-w-md w-full animate-fade-in relative z-10 shadow-blue-500/5">
             
             <div class="text-center mb-8">
-                <div class="w-16 h-16 bg-gradient-to-tr from-blue-600 to-sky-400 rounded-2xl text-white mx-auto flex items-center justify-center text-2xl shadow-lg shadow-blue-200 mb-4">
+                <div class="w-16 h-16 bg-gradient-to-tr from-blue-600 to-sky-400 rounded-2xl text-white mx-auto flex items-center justify-center text-2xl shadow-lg shadow-blue-500/30 mb-4">
                     <i class="fa-solid fa-film"></i>
                 </div>
                 <h1 class="text-xl font-bold text-slate-800 tracking-tight">Divisi Editing</h1>
@@ -57,13 +58,13 @@
             </div>
 
             <!-- Error Notification -->
-            <div id="loginError" class="hidden mb-4 p-3 bg-red-50 border border-red-200 rounded-xl text-red-600 text-xs flex items-center gap-2">
+            <div id="loginError" class="hidden mb-4 p-3 bg-red-50/80 backdrop-blur-md border border-red-200 rounded-xl text-red-600 text-xs flex items-center gap-2">
                 <i class="fa-solid fa-circle-exclamation text-sm"></i>
                 <span id="loginErrorMsg">Gagal melakukan login.</span>
             </div>
 
             <!-- Opsi 1: Google Login -->
-            <button onclick="handleGoogleLogin()" class="w-full bg-white hover:bg-slate-50 text-slate-700 font-semibold py-3 px-4 rounded-xl border border-slate-200 shadow-sm text-xs flex items-center justify-center gap-3 transition-all active:scale-95 cursor-pointer mb-5">
+            <button onclick="handleGoogleLogin()" class="w-full bg-white/80 hover:bg-white text-slate-700 font-semibold py-3 px-4 rounded-xl border border-white/80 shadow-sm text-xs flex items-center justify-center gap-3 transition-all active:scale-95 cursor-pointer mb-5 backdrop-blur-sm">
                 <svg class="w-5 h-5" viewBox="0 0 24 24">
                     <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
                     <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
@@ -74,9 +75,9 @@
             </button>
 
             <div class="flex items-center my-5">
-                <div class="flex-grow border-t border-slate-200"></div>
+                <div class="flex-grow border-t border-slate-300/60"></div>
                 <span class="px-3 text-[11px] text-slate-400 uppercase font-semibold">Atau Login Email</span>
-                <div class="flex-grow border-t border-slate-200"></div>
+                <div class="flex-grow border-t border-slate-300/60"></div>
             </div>
 
             <!-- Opsi 2: Email & Password Login -->
@@ -85,18 +86,18 @@
                     <label class="block text-xs font-semibold text-slate-700 mb-1">Email</label>
                     <div class="relative">
                         <i class="fa-regular fa-envelope absolute left-3.5 top-3 text-slate-400 text-xs"></i>
-                        <input type="email" id="loginEmail" required placeholder="••••••••" class="w-full pl-9 pr-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:bg-white focus:ring-2 focus:ring-blue-400 outline-none transition-all">
+                        <input type="email" id="loginEmail" required placeholder="••••••••" class="w-full pl-9 pr-3.5 py-2.5 bg-white/60 border border-white/80 rounded-xl text-xs focus:bg-white/90 focus:ring-2 focus:ring-blue-400 outline-none transition-all shadow-inner">
                     </div>
                 </div>
                 <div>
                     <label class="block text-xs font-semibold text-slate-700 mb-1">Password</label>
                     <div class="relative">
                         <i class="fa-solid fa-lock absolute left-3.5 top-3 text-slate-400 text-xs"></i>
-                        <input type="password" id="loginPassword" required placeholder="••••••••" class="w-full pl-9 pr-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:bg-white focus:ring-2 focus:ring-blue-400 outline-none transition-all">
+                        <input type="password" id="loginPassword" required placeholder="••••••••" class="w-full pl-9 pr-3.5 py-2.5 bg-white/60 border border-white/80 rounded-xl text-xs focus:bg-white/90 focus:ring-2 focus:ring-blue-400 outline-none transition-all shadow-inner">
                     </div>
                 </div>
 
-                <button type="submit" id="emailLoginBtn" class="w-full bg-gradient-to-r from-blue-600 to-sky-500 hover:from-blue-700 hover:to-sky-600 text-white font-semibold py-2.5 rounded-xl shadow-md shadow-blue-200 text-xs transition-all active:scale-95 cursor-pointer mt-2">
+                <button type="submit" id="emailLoginBtn" class="w-full bg-gradient-to-r from-blue-600 to-sky-500 hover:from-blue-700 hover:to-sky-600 text-white font-semibold py-2.5 rounded-xl shadow-lg shadow-blue-500/25 text-xs transition-all active:scale-95 cursor-pointer mt-2">
                     Masuk dengan Email
                 </button>
             </form>
@@ -111,28 +112,28 @@
     <!-- ========================================== -->
     <!-- 2. HALAMAN UTAMA DASHBOARD                 -->
     <!-- ========================================== -->
-    <div id="mainDashboard" class="hidden min-h-screen bg-gradient-to-br from-blue-50/60 via-sky-50/20 to-indigo-50/20">
+    <div id="mainDashboard" class="hidden min-h-screen">
         
         <!-- Header Navbar -->
-        <header class="bg-white/80 backdrop-blur-md border-b border-blue-100/80 sticky top-0 z-40 shadow-sm shadow-blue-100/40 no-print">
+        <header class="bg-white/60 backdrop-blur-xl border-b border-white/50 sticky top-0 z-40 shadow-sm shadow-blue-500/5">
             <div class="container mx-auto px-4 py-3.5 flex justify-between items-center max-w-7xl">
                 <div class="flex items-center space-x-3">
-                    <div class="p-2.5 bg-gradient-to-tr from-blue-600 to-sky-400 rounded-xl text-white shadow-md shadow-blue-200">
+                    <div class="p-2.5 bg-gradient-to-tr from-blue-600 to-sky-400 rounded-xl text-white shadow-md shadow-blue-500/30">
                         <i class="fa-solid fa-film text-lg"></i>
                     </div>
                     <div>
                         <h1 class="text-base font-bold tracking-wide text-slate-800 flex items-center gap-2">
                             Divisi Editing
-                            <span id="roleBadge" class="bg-blue-100 text-blue-700 text-[10px] font-semibold px-2 py-0.5 rounded-full border border-blue-200">PROD</span>
+                            <span id="roleBadge" class="bg-blue-100/80 backdrop-blur text-blue-700 text-[10px] font-semibold px-2 py-0.5 rounded-full border border-blue-200">PROD</span>
                         </h1>
-                        <p class="text-[11px] text-blue-600/80 font-medium">Portal Evaluasi Output Garapan Video</p>
+                        <p class="text-[11px] text-blue-600 font-medium">Portal Evaluasi Output Garapan Video</p>
                     </div>
                 </div>
 
                 <!-- User Profile Area -->
                 <div class="flex items-center gap-3">
-                    <div id="userProfile" class="flex items-center gap-3 bg-blue-50/80 px-3 py-1.5 rounded-full border border-blue-200/60">
-                        <img id="userAvatar" class="w-7 h-7 rounded-full border border-blue-300" src="https://via.placeholder.com/150" alt="Avatar">
+                    <div id="userProfile" class="flex items-center gap-3 bg-white/60 backdrop-blur-md px-3 py-1.5 rounded-full border border-white/80 shadow-sm">
+                        <img id="userAvatar" class="w-7 h-7 rounded-full border border-white" src="https://via.placeholder.com/150" alt="Avatar">
                         <div class="text-left hidden sm:block">
                             <p id="userName" class="text-xs font-bold text-slate-800 leading-tight">-</p>
                             <p id="userEmail" class="text-[10px] text-slate-500 leading-tight">-</p>
@@ -153,7 +154,7 @@
                     <h2 class="text-xl font-bold text-slate-800 tracking-tight">Evaluasi Kinerja</h2>
                     <p class="text-xs text-slate-500 mt-0.5">Monitoring Produktivitas Dan Kinerja Anggota</p>
                 </div>
-                <div class="flex items-center gap-2 bg-white/90 backdrop-blur px-4 py-2 rounded-xl border border-blue-100 shadow-sm text-xs font-medium text-slate-600">
+                <div class="flex items-center gap-2 bg-white/60 backdrop-blur-md px-4 py-2 rounded-xl border border-white/80 shadow-sm text-xs font-medium text-slate-600">
                     <i class="fa-regular fa-calendar-check text-blue-500"></i>
                     <span id="currentDateText"></span>
                 </div>
@@ -162,42 +163,42 @@
             <!-- Summary Cards -->
             <div class="grid grid-cols-1 md:grid-cols-12 gap-5 mb-8 no-print">
                 
-                <div class="md:col-span-4 bg-white/90 backdrop-blur p-5 rounded-2xl shadow-sm border border-blue-100 flex items-center justify-between">
+                <div class="md:col-span-4 bg-white/60 backdrop-blur-xl p-5 rounded-2xl shadow-lg shadow-blue-500/5 border border-white/80 flex items-center justify-between">
                     <div>
                         <p class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Total Entri Laporan</p>
                         <h3 id="statTotalReports" class="text-2xl font-black text-slate-800 mt-1">0</h3>
                         <p class="text-[11px] text-emerald-600 font-medium mt-1"><i class="fa-solid fa-cloud-check mr-1"></i>Tersinkron Database</p>
                     </div>
-                    <div class="w-12 h-12 bg-blue-50 text-blue-600 rounded-2xl flex items-center justify-center text-xl shadow-inner border border-blue-100">
+                    <div class="w-12 h-12 bg-white/80 text-blue-600 rounded-2xl flex items-center justify-center text-xl shadow-sm border border-white">
                         <i class="fa-solid fa-list-ol"></i>
                     </div>
                 </div>
 
-                <div class="md:col-span-4 bg-white/90 backdrop-blur p-5 rounded-2xl shadow-sm border border-blue-100 flex items-center justify-between">
+                <div class="md:col-span-4 bg-white/60 backdrop-blur-xl p-5 rounded-2xl shadow-lg shadow-blue-500/5 border border-white/80 flex items-center justify-between">
                     <div>
                         <p class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Total Video Digarap</p>
                         <h3 id="statTotalVideos" class="text-2xl font-black text-slate-800 mt-1">0</h3>
                         <p class="text-[11px] text-sky-600 font-medium mt-1"><i class="fa-solid fa-circle-check mr-1"></i>Output terkumpul</p>
                     </div>
-                    <div class="w-12 h-12 bg-sky-50 text-sky-600 rounded-2xl flex items-center justify-center text-xl shadow-inner border border-sky-100">
+                    <div class="w-12 h-12 bg-white/80 text-sky-600 rounded-2xl flex items-center justify-center text-xl shadow-sm border border-white">
                         <i class="fa-solid fa-video"></i>
                     </div>
                 </div>
 
-                <div class="md:col-span-4 bg-white/90 backdrop-blur p-5 rounded-2xl shadow-sm border border-blue-100 flex flex-col justify-between">
+                <div class="md:col-span-4 bg-white/60 backdrop-blur-xl p-5 rounded-2xl shadow-lg shadow-blue-500/5 border border-white/80 flex flex-col justify-between">
                     <div>
                         <div class="flex justify-between items-center mb-1">
                             <p class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Pencapaian Target</p>
                             <span id="targetPercent" class="text-xs font-bold text-blue-600">0%</span>
                         </div>
-                        <div class="w-full bg-blue-50 h-2.5 rounded-full overflow-hidden border border-blue-100 mt-2">
+                        <div class="w-full bg-white/60 h-2.5 rounded-full overflow-hidden border border-white/80 mt-2">
                             <div id="targetProgressBar" class="bg-gradient-to-r from-blue-400 to-sky-500 h-full w-0 transition-all duration-500 rounded-full"></div>
                         </div>
                     </div>
                     <div class="text-[11px] text-slate-400 mt-3 flex items-center justify-between">
                         <span class="flex items-center gap-1.5 font-medium text-slate-500">
                             Target Per-Periode: 
-                            <input type="number" id="dailyTargetInput" min="1" value="10" onchange="updateTargetValue()" class="w-12 px-1.5 py-0.5 bg-blue-50 border border-blue-200 rounded-lg text-center text-xs font-bold text-blue-700 outline-none"> 
+                            <input type="number" id="dailyTargetInput" min="1" value="10" onchange="updateTargetValue()" class="w-12 px-1.5 py-0.5 bg-white/80 border border-white rounded-lg text-center text-xs font-bold text-blue-700 outline-none shadow-inner"> 
                             Video
                         </span>
                         <i class="fa-solid fa-bullseye text-blue-400"></i>
@@ -210,8 +211,8 @@
             <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
                 
                 <!-- Form Input -->
-                <div class="lg:col-span-4 bg-white/95 backdrop-blur p-6 rounded-2xl shadow-sm border border-blue-100 h-fit sticky top-20 z-20 no-print">
-                    <h2 class="text-base font-bold text-slate-800 mb-4 pb-3 border-b border-blue-50 flex items-center justify-between">
+                <div class="lg:col-span-4 bg-white/60 backdrop-blur-xl p-6 rounded-2xl shadow-lg shadow-blue-500/5 border border-white/80 h-fit sticky top-20 z-20 no-print">
+                    <h2 class="text-base font-bold text-slate-800 mb-4 pb-3 border-b border-white/60 flex items-center justify-between">
                         <span class="flex items-center gap-2">
                             <i class="fa-solid fa-pen-to-square text-blue-500"></i> Form Input Garapan
                         </span>
@@ -222,7 +223,7 @@
                             <label class="block text-xs font-semibold text-slate-700 mb-1">Nama Editor</label>
                             <div class="relative">
                                 <i class="fa-regular fa-user absolute left-3.5 top-3 text-slate-400 text-xs"></i>
-                                <input type="text" id="editorName" required placeholder="Contoh: Budi / Dimas" class="w-full pl-9 pr-3.5 py-2.5 bg-blue-50/20 border border-blue-100 rounded-xl focus:bg-white focus:ring-2 focus:ring-blue-400 outline-none text-xs">
+                                <input type="text" id="editorName" required placeholder="Contoh: Budi / Dimas" class="w-full pl-9 pr-3.5 py-2.5 bg-white/50 border border-white/80 rounded-xl focus:bg-white/90 focus:ring-2 focus:ring-blue-400 outline-none text-xs shadow-inner">
                             </div>
                         </div>
 
@@ -230,7 +231,7 @@
                             <label class="block text-xs font-semibold text-slate-700 mb-1">Judul / Nama Project Video</label>
                             <div class="relative">
                                 <i class="fa-solid fa-clapperboard absolute left-3.5 top-3 text-slate-400 text-xs"></i>
-                                <input type="text" id="videoProject" required placeholder="Contoh: Video Event Launching..." class="w-full pl-9 pr-3.5 py-2.5 bg-blue-50/20 border border-blue-100 rounded-xl focus:bg-white focus:ring-2 focus:ring-blue-400 outline-none text-xs">
+                                <input type="text" id="videoProject" required placeholder="Contoh: Video Event Launching..." class="w-full pl-9 pr-3.5 py-2.5 bg-white/50 border border-white/80 rounded-xl focus:bg-white/90 focus:ring-2 focus:ring-blue-400 outline-none text-xs shadow-inner">
                             </div>
                         </div>
 
@@ -238,7 +239,7 @@
                             <label class="block text-xs font-semibold text-slate-700 mb-1">Tipe / Konsep Video</label>
                             <div class="relative">
                                 <i class="fa-solid fa-layer-group absolute left-3.5 top-3 text-slate-400 text-xs"></i>
-                                <select id="videoType" required class="w-full pl-9 pr-3.5 py-2.5 bg-blue-50/20 border border-blue-100 rounded-xl focus:bg-white focus:ring-2 focus:ring-blue-400 outline-none text-xs text-slate-700 appearance-none">
+                                <select id="videoType" required class="w-full pl-9 pr-3.5 py-2.5 bg-white/50 border border-white/80 rounded-xl focus:bg-white/90 focus:ring-2 focus:ring-blue-400 outline-none text-xs text-slate-700 appearance-none shadow-inner">
                                     <option value="Rekap Video / Video Recap">Rekap Video / Video Recap</option>
                                     <option value="Wawancara / Interview">Wawancara / Interview</option>
                                     <option value="Opini Publik / Voxpop">Opini Publik / Voxpop</option>
@@ -256,20 +257,20 @@
                             <label class="block text-xs font-semibold text-slate-700 mb-1">Jumlah Video</label>
                             <div class="relative">
                                 <i class="fa-solid fa-hashtag absolute left-3.5 top-3 text-slate-400 text-xs"></i>
-                                <input type="number" id="videoCount" min="1" value="1" required class="w-full pl-9 pr-3.5 py-2.5 bg-blue-50/20 border border-blue-100 rounded-xl focus:bg-white focus:ring-2 focus:ring-blue-400 outline-none text-xs">
+                                <input type="number" id="videoCount" min="1" value="1" required class="w-full pl-9 pr-3.5 py-2.5 bg-white/50 border border-white/80 rounded-xl focus:bg-white/90 focus:ring-2 focus:ring-blue-400 outline-none text-xs shadow-inner">
                             </div>
                         </div>
 
-                        <button type="submit" id="submitBtn" class="w-full bg-gradient-to-r from-blue-500 to-sky-500 hover:from-blue-600 hover:to-sky-600 text-white font-semibold py-3 rounded-xl shadow-md shadow-blue-200 transition-all duration-200 active:scale-95 flex items-center justify-center gap-2 text-xs mt-2 cursor-pointer">
+                        <button type="submit" id="submitBtn" class="w-full bg-gradient-to-r from-blue-500 to-sky-500 hover:from-blue-600 hover:to-sky-600 text-white font-semibold py-3 rounded-xl shadow-lg shadow-blue-500/25 transition-all duration-200 active:scale-95 flex items-center justify-center gap-2 text-xs mt-2 cursor-pointer">
                             <i class="fa-solid fa-paper-plane"></i> Simpan Data Garapan
                         </button>
                     </form>
                 </div>
 
                 <!-- Tabel Monitoring -->
-                <div class="lg:col-span-8 bg-white/90 backdrop-blur p-6 rounded-2xl shadow-sm border border-blue-100">
+                <div class="lg:col-span-8 bg-white/60 backdrop-blur-xl p-6 rounded-2xl shadow-lg shadow-blue-500/5 border border-white/80">
                     
-                    <div class="flex flex-wrap justify-between items-center mb-6 pb-4 border-b border-blue-50 gap-3 no-print">
+                    <div class="flex flex-wrap justify-between items-center mb-6 pb-4 border-b border-white/60 gap-3 no-print">
                         <div>
                             <h2 class="text-base font-bold text-slate-800 flex items-center gap-2">
                                 <i class="fa-solid fa-list-check text-blue-500"></i> Rekap Garapan Editor
@@ -280,17 +281,17 @@
                         <div class="flex items-center gap-2 flex-wrap sm:flex-nowrap w-full sm:w-auto">
                             <div class="relative w-full sm:w-48">
                                 <i class="fa-solid fa-magnifying-glass absolute left-3 top-2.5 text-slate-400 text-xs"></i>
-                                <input type="text" id="searchInput" onkeyup="filterTable()" placeholder="Cari editor / judul..." class="w-full pl-8 pr-3 py-1.5 bg-blue-50/40 border border-blue-100 rounded-lg text-xs outline-none focus:ring-2 focus:ring-blue-300">
+                                <input type="text" id="searchInput" onkeyup="filterTable()" placeholder="Cari editor / judul..." class="w-full pl-8 pr-3 py-1.5 bg-white/50 border border-white/80 rounded-lg text-xs outline-none focus:ring-2 focus:ring-blue-300 shadow-inner">
                             </div>
 
-                            <button id="exportPdfBtn" onclick="exportToPDF()" class="bg-blue-50 hover:bg-blue-100 text-blue-600 font-semibold px-3.5 py-2 rounded-xl transition-all text-xs flex items-center gap-1.5 border border-blue-200/60 shadow-sm whitespace-nowrap cursor-pointer">
+                            <button id="exportPdfBtn" onclick="exportToPDF()" class="bg-white/70 hover:bg-white text-blue-600 font-semibold px-3.5 py-2 rounded-xl transition-all text-xs flex items-center gap-1.5 border border-white shadow-sm whitespace-nowrap cursor-pointer backdrop-blur-sm">
                                 <i class="fa-solid fa-file-pdf text-blue-500"></i> Download PDF
                             </button>
                         </div>
                     </div>
 
                     <!-- AREA PRINT / EXPORT PDF -->
-                    <div id="pdfReportContent" class="bg-white p-2">
+                    <div id="pdfReportContent" class="bg-white/80 backdrop-blur-md p-2 rounded-xl border border-white/60">
                         
                         <div id="printHeader" class="hidden mb-6 pb-4 border-b-2 border-slate-700">
                             <div class="text-center">
@@ -299,10 +300,11 @@
                             </div>
                         </div>
 
-                        <div class="overflow-x-auto">
+                        <!-- Area Scroll Tabel Mandiri -->
+                        <div class="max-h-[600px] overflow-y-auto pr-1">
                             <table class="w-full text-left border-collapse">
-                                <thead>
-                                    <tr class="bg-blue-50/80 border-b border-blue-100 text-slate-500 uppercase text-[10px] tracking-wider font-bold">
+                                <thead class="sticky top-0 bg-white/90 backdrop-blur-xl z-10 shadow-xs">
+                                    <tr class="border-b border-slate-200/60 text-slate-500 uppercase text-[10px] tracking-wider font-bold">
                                         <th class="p-3 rounded-l-lg">Jam</th>
                                         <th class="p-3">Nama Editor</th>
                                         <th class="p-3">Judul / Project Video</th>
@@ -311,12 +313,12 @@
                                         <th class="p-3 text-center rounded-r-lg no-print">Aksi</th>
                                     </tr>
                                 </thead>
-                                <tbody id="logTableBody" class="divide-y divide-blue-50 text-xs">
+                                <tbody id="logTableBody" class="divide-y divide-slate-100/60 text-xs">
                                 </tbody>
                             </table>
 
                             <div id="emptyState" class="hidden text-center py-12 px-4">
-                                <div class="w-16 h-16 bg-blue-50 text-blue-400 rounded-full flex items-center justify-center mx-auto mb-3 text-2xl border border-blue-100">
+                                <div class="w-16 h-16 bg-white/60 text-blue-400 rounded-full flex items-center justify-center mx-auto mb-3 text-2xl border border-white">
                                     <i class="fa-regular fa-folder-open"></i>
                                 </div>
                                 <p class="text-sm font-semibold text-slate-600">Belum ada laporan dimasukkan</p>
@@ -588,15 +590,15 @@
                 emptyState.classList.add('hidden');
 
                 dataToRender.forEach((item) => {
-                    let typeBadgeStyle = 'bg-blue-50 text-blue-700 border-blue-200';
-                    if (item.videoType.includes('Wawancara')) typeBadgeStyle = 'bg-sky-50 text-sky-700 border-sky-200';
-                    if (item.videoType.includes('Rekap')) typeBadgeStyle = 'bg-indigo-50 text-indigo-700 border-indigo-200';
-                    if (item.videoType.includes('Narasi')) typeBadgeStyle = 'bg-cyan-50 text-cyan-700 border-cyan-200';
+                    let typeBadgeStyle = 'bg-blue-50/80 text-blue-700 border-blue-200';
+                    if (item.videoType.includes('Wawancara')) typeBadgeStyle = 'bg-sky-50/80 text-sky-700 border-sky-200';
+                    if (item.videoType.includes('Rekap')) typeBadgeStyle = 'bg-indigo-50/80 text-indigo-700 border-indigo-200';
+                    if (item.videoType.includes('Narasi')) typeBadgeStyle = 'bg-cyan-50/80 text-cyan-700 border-cyan-200';
 
                     const canDelete = isAdminUser || (currentUser && currentUser.email === item.createdByEmail);
 
                     const row = document.createElement('tr');
-                    row.className = "hover:bg-blue-50/40 transition-colors duration-150 animate-fade-in";
+                    row.className = "hover:bg-white/40 transition-colors duration-150 animate-fade-in";
                     row.innerHTML = `
                         <td class="p-3 font-mono text-slate-400 text-[11px]">${item.time || '-'}</td>
                         <td class="p-3 font-bold text-slate-800">${item.name}</td>
