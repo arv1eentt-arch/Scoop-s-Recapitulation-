@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Evaluasi Kinerja Video Editor - Divisi Editing Scoop</title>
+    <title>Evaluasi Kinerja Video - Divisi Editing</title>
     
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -207,10 +207,10 @@
             </div>
 
             <!-- Content Grid -->
-            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
                 
                 <!-- Form Input -->
-                <div class="lg:col-span-4 bg-white/90 backdrop-blur p-6 rounded-2xl shadow-sm border border-blue-100 h-fit sticky top-20 no-print">
+                <div class="lg:col-span-4 bg-white/95 backdrop-blur p-6 rounded-2xl shadow-sm border border-blue-100 h-fit sticky top-20 z-20 no-print">
                     <h2 class="text-base font-bold text-slate-800 mb-4 pb-3 border-b border-blue-50 flex items-center justify-between">
                         <span class="flex items-center gap-2">
                             <i class="fa-solid fa-pen-to-square text-blue-500"></i> Form Input Garapan
@@ -334,8 +334,8 @@
 
     <!-- FIREBASE JS SDK -->
     <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-analytics.js";
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
+        import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-analytics.js";
         import { 
             getAuth, 
             GoogleAuthProvider, 
@@ -343,7 +343,7 @@
             signInWithEmailAndPassword,
             signOut, 
             onAuthStateChanged 
-        } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+        } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js";
         import { 
             getFirestore, 
             collection, 
@@ -354,9 +354,9 @@
             query, 
             orderBy, 
             serverTimestamp 
-        } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
 
-        // CONFIG FIREBASE
+        // CONFIG FIREBASE BARU
         const firebaseConfig = {
             apiKey: "AIzaSyAhGlki2Dah__1CAbsHPbupwdWRvyQ3IZc",
             authDomain: "scoop-recapitulation-arv1ent.firebaseapp.com",
@@ -367,7 +367,7 @@
             measurementId: "G-9FE401JPFP"
         };
 
-        // DAFTAR AKUN ADMIN (Diakses via Google / Email Login)
+        // DAFTAR AKUN ADMIN
         const ADMIN_EMAILS = [
             "arvnn.ad4m@gmail.com",
             "jnvisbleee@gmail.com",
@@ -450,16 +450,14 @@
             loginError.classList.add('hidden');
         }
 
-        // Monitor Auth State Changes (GATE LOGIC)
+        // Monitor Auth State Changes
         onAuthStateChanged(auth, (user) => {
             if (user) {
                 currentUser = user;
                 const email = (user.email || '').toLowerCase();
                 
-                // Cek Peran (Admin vs Staff)
                 isAdminUser = ADMIN_EMAILS.includes(email);
 
-                // Update UI Profile
                 userAvatar.src = user.photoURL || `https://ui-avatars.com/api/?name=${encodeURIComponent(user.displayName || email)}&background=0D8ABC&color=fff`;
                 userName.textContent = user.displayName || email.split('@')[0];
                 userEmail.textContent = email;
@@ -472,23 +470,19 @@
                     roleBadge.className = "bg-blue-100 text-blue-700 text-[10px] font-bold px-2 py-0.5 rounded-full border border-blue-200";
                 }
 
-                // Auto Fill Nama Editor
                 if (!editorNameInput.value) {
                     editorNameInput.value = user.displayName || email.split('@')[0];
                 }
 
-                // Tampilkan Dashboard, Sembunyikan Login Screen
                 loginScreen.classList.add('hidden');
                 mainDashboard.classList.remove('hidden');
 
-                // Sinkronkan Data dari Firestore
                 listenToFirestoreReports();
 
             } else {
                 currentUser = null;
                 isAdminUser = false;
 
-                // Tampilkan Login Screen, Sembunyikan Dashboard
                 loginScreen.classList.remove('hidden');
                 mainDashboard.classList.add('hidden');
 
@@ -562,7 +556,7 @@
             }
         });
 
-        // Hapus Laporan (Hanya Admin atau Pembuat Laporan)
+        // Hapus Laporan
         window.deleteReport = async function(id, createdByEmail) {
             if (!isAdminUser && currentUser.email !== createdByEmail) {
                 alert("Anda hanya bisa menghapus laporan yang Anda buat sendiri.");
